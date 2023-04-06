@@ -14,6 +14,10 @@ repositories {
 	maven { url 'https://ueaj.dev/maven' }
 }
 
+loom {
+	splitEnvironmentSourceSets()
+}
+
 // See `runs.gradle`
 apply from: 'runs.gradle', to: this
 
@@ -21,26 +25,30 @@ loom {
 	mods {
 		'simply-no-shading' {
 			sourceSet 'main'
+			sourceSet 'client'
 		}
 
 		'simply-no-shading-test' {
 			sourceSet 'test'
+			sourceSet 'testClient'
 		}
 
 		'simply-no-shading-bedrockify-test' {
 			sourceSet 'bedrockifyTest'
+			sourceSet 'bedrockifyTestClient'
 		}
 
 		'simply-no-shading-enhancedblockentities-test' {
 			sourceSet 'enhancedblockentitiesTest'
+			sourceSet 'enhancedblockentitiesTestClient'
 		}
 
 		'simply-no-shading-sodium-test' {
-			sourceSet 'sodiumTest'
+			sourceSet 'sodiumTestClient'
 		}
 
 		'simply-no-shading-indium-test' {
-			sourceSet 'indiumTest'
+			sourceSet 'indiumTestClient'
 		}
 	}
 }
@@ -49,6 +57,8 @@ dependencies {
 	minecraft "com.mojang:minecraft:$gameVersion"
 	mappings loom.officialMojangMappings()
 	modImplementation 'net.fabricmc:fabric-loader:latest.release'
+	// Fabric Loader acts weird when not included in SOME configurations
+	modClientImplementation 'net.fabricmc:fabric-loader:latest.release'
 
 	// See `dependencies.gradle`
 	apply from: 'dependencies.gradle', to: dependencies
