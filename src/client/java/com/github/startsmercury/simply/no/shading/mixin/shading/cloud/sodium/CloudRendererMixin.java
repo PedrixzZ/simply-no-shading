@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 
 import me.jellysquid.mods.sodium.client.render.immediate.CloudRenderer;
@@ -54,10 +54,10 @@ public class CloudRendererMixin {
 	 * This is an {@linkplain ModifyArg argument modifier} that replaces the
 	 * {@code mixedColor} with the {@code baseColor} in
 	 * {@code CloudRenderer.rebuildGeometry(BufferBuilder, int, int, int)} if
-	 * {@linkplain Config#cloudShadingEnabled cloud shading is disabled}.
+	 * {@linkplain Options#cloudShadingEnabled cloud shading is disabled}.
 	 *
 	 * @param mixedColor the mixed cloud color
-	 * @return {@code mixedColor} when {@linkplain Config#cloudShadingEnabled cloud
+	 * @return {@code mixedColor} when {@linkplain Options#cloudShadingEnabled cloud
 	 *         shading is enabled}; {@code baseColor} otherwise
 	 */
 	@ModifyArg(method = "rebuildGeometry(Lcom/mojang/blaze3d/vertex/BufferBuilder;III)V",
@@ -66,7 +66,7 @@ public class CloudRendererMixin {
 	        index = 4,
 	        remap = false)
 	private int undoColorMixing(final int mixedColor) {
-		final var cloudShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().cloudShadingEnabled;
+		final var cloudShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().cloudShadingEnabled;
 
 		if (cloudShadingEnabled)
 			return mixedColor;

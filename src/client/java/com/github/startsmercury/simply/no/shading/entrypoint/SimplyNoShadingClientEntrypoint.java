@@ -2,9 +2,9 @@ package com.github.startsmercury.simply.no.shading.entrypoint;
 
 import static net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
-import com.github.startsmercury.simply.no.shading.client.gui.screens.ConfigScreen;
+import com.github.startsmercury.simply.no.shading.client.gui.screens.OptionsScreen;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -25,10 +25,10 @@ public class SimplyNoShadingClientEntrypoint implements ClientModInitializer {
 	public void onInitializeClient() {
 		final var simplyNoShading = new SimplyNoShading();
 
-		simplyNoShading.loadConfig();
+		simplyNoShading.loadOptions();
 
 		setupKeyMappings(simplyNoShading);
-		setupShutdownHook(simplyNoShading::saveConfig);
+		setupShutdownHook(simplyNoShading::saveOptions);
 	}
 
 	/**
@@ -37,10 +37,10 @@ public class SimplyNoShadingClientEntrypoint implements ClientModInitializer {
 	 * @param simplyNoShading the simply no shading instance
 	 */
 	protected void setupKeyMappings(final SimplyNoShading simplyNoShading) {
-		final var openConfigScreen = new KeyMapping("key.simply-no-shading.openOptionsScreen",
+		final var openOptionsScreen = new KeyMapping("key.simply-no-shading.openOptionsScreen",
 		        InputConstants.UNKNOWN.getValue(),
 		        SimplyNoShading.KEY_CATEGORY);
-		final var reloadConfig = new KeyMapping("key.simply-no-shading.reloadConfig",
+		final var reloadOptions = new KeyMapping("key.simply-no-shading.reloadOptions",
 		        InputConstants.UNKNOWN.getValue(),
 		        SimplyNoShading.KEY_CATEGORY);
 		final var toggleBlockShading = new KeyMapping("key.simply-no-shading.toggleBlockShading",
@@ -50,33 +50,33 @@ public class SimplyNoShadingClientEntrypoint implements ClientModInitializer {
 		        InputConstants.UNKNOWN.getValue(),
 		        SimplyNoShading.KEY_CATEGORY);
 
-		registerKeyBinding(openConfigScreen);
-		registerKeyBinding(reloadConfig);
+		registerKeyBinding(openOptionsScreen);
+		registerKeyBinding(reloadOptions);
 		registerKeyBinding(toggleBlockShading);
 		registerKeyBinding(toggleCloudShading);
 
 		ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
-			if (reloadConfig.consumeClick()) {
-				while (reloadConfig.consumeClick()) {}
+			if (reloadOptions.consumeClick()) {
+				while (reloadOptions.consumeClick()) {}
 
-				simplyNoShading.loadConfig();
+				simplyNoShading.loadOptions();
 			}
 
-			if (openConfigScreen.consumeClick()) {
-				while (openConfigScreen.consumeClick()) {}
+			if (openOptionsScreen.consumeClick()) {
+				while (openOptionsScreen.consumeClick()) {}
 
-				minecraft.setScreen(new ConfigScreen(null));
+				minecraft.setScreen(new OptionsScreen(null));
 				return;
 			}
 
-			final var builder = Config.builder(simplyNoShading.getConfig());
+			final var builder = Options.builder(simplyNoShading.getOptions());
 
 			while (toggleBlockShading.consumeClick())
 				builder.toggleBlockShading();
 			while (toggleCloudShading.consumeClick())
 				builder.toggleCloudShading();
 
-			simplyNoShading.setConfig(builder.build());
+			simplyNoShading.setOptions(builder.build());
 		});
 	}
 

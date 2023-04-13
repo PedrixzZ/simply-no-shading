@@ -3,17 +3,17 @@ package com.github.startsmercury.simply.no.shading.client;
 import java.util.Objects;
 
 /**
- * The {@code Config} class is extendable but immutable collection of data that
+ * The {@code Options} class is extendable but immutable collection of data that
  * plays a role in the bahavior of Simply No Shading, primarily in toggling
  * shading.
  *
- * @since 6.0.0
+ * @since 6.1.0
  */
-public class Config {
+public class Options {
 	/**
-	 * The {@code Config.Builder} class is the builder for {@code Config}. For
-	 * further details, refer to the {@code Config} class as documenting the builder
-	 * would potentially be redundant and may be overlooked or be outdated.
+	 * The {@code Options.Builder} class is the builder for {@code Options}. For
+	 * further details, refer to the {@code Options} class as documenting the
+	 * builder would potentially be redundant and may be overlooked or be outdated.
 	 */
 	public static class Builder {
 		/**
@@ -27,12 +27,12 @@ public class Config {
 		private boolean cloudShadingEnabled;
 
 		/**
-		 * Returns a newly build config.
+		 * Returns a newly build options.
 		 *
-		 * @return a newly build config
+		 * @return a newly build options
 		 */
-		public Config build() {
-			return new Config(this.blockShadingEnabled, this.cloudShadingEnabled);
+		public Options build() {
+			return new Options(this.blockShadingEnabled, this.cloudShadingEnabled);
 		}
 
 		/**
@@ -97,21 +97,21 @@ public class Config {
 	}
 
 	/**
-	 * The config preset where all shading options were disabled.
+	 * The options preset where all shading options were disabled.
 	 */
-	public static final Config ALL_OFF = builder().setBlockShadingEnabled(false).setCloudShadingEnabled(false).build();
+	public static final Options ALL_OFF = builder().setBlockShadingEnabled(false).setCloudShadingEnabled(false).build();
 
 	/**
-	 * The config preset that mimics OptiFine's Internal Shaders (with Old Lighting
+	 * The options preset that mimics OptiFine's Internal Shaders (with Old Lighting
 	 * enabled).
 	 */
-	public static final Config INTERNAL_SHADERS = builder().setBlockShadingEnabled(false).build();
+	public static final Options INTERNAL_SHADERS = builder().setBlockShadingEnabled(false).build();
 
 	/**
-	 * The config preset that aligns with the vanilla game's default. Essentially
+	 * The options preset that aligns with the vanilla game's default. Essentially
 	 * like when Simply No Shading is not present.
 	 */
-	public static final Config VANILLA = builder().build();
+	public static final Options VANILLA = builder().build();
 
 	/**
 	 * Creates a new builder.
@@ -123,14 +123,14 @@ public class Config {
 	}
 
 	/**
-	 * Creates a new builder with fields set to a pre-existing config.
+	 * Creates a new builder with fields set to a pre-existing options.
 	 *
-	 * @param config the config to base on
+	 * @param options the options to base on
 	 * @return a new builder
 	 */
-	public static Builder builder(final Config config) {
-		return builder().setBlockShadingEnabled(config.blockShadingEnabled)
-		                .setCloudShadingEnabled(config.cloudShadingEnabled);
+	public static Builder builder(final Options options) {
+		return builder().setBlockShadingEnabled(options.blockShadingEnabled)
+		                .setCloudShadingEnabled(options.cloudShadingEnabled);
 	}
 
 	/**
@@ -144,12 +144,12 @@ public class Config {
 	public final boolean cloudShadingEnabled;
 
 	/**
-	 * Creates a new config with all the fields set.
+	 * Creates a new options with all the fields set.
 	 *
 	 * @param blockShadingEnabled controls block shading, excluding block entities
 	 * @param cloudShadingEnabled controls cloud shading
 	 */
-	public Config(final boolean blockShadingEnabled, final boolean cloudShadingEnabled) {
+	public Options(final boolean blockShadingEnabled, final boolean cloudShadingEnabled) {
 		this.blockShadingEnabled = blockShadingEnabled;
 		this.cloudShadingEnabled = cloudShadingEnabled;
 	}
@@ -161,7 +161,7 @@ public class Config {
 	public boolean equals(final Object obj) {
 		if (this == obj)
 			return true;
-		if (obj instanceof final Config other)
+		if (obj instanceof final Options other)
 			return this.blockShadingEnabled == other.blockShadingEnabled
 			        && this.cloudShadingEnabled == other.cloudShadingEnabled;
 		return false;

@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 
 import me.juancarloscp52.bedrockify.client.features.bedrockShading.BedrockBlockShading;
@@ -31,7 +31,7 @@ public class BedrockBlockShadingMixin {
 	 * of {@link BedrockBlockShading#getLiquidShade(Direction, boolean)}.
 	 * <p>
 	 * Returns the original method early with the float value of {@code 1.0f} if the
-	 * {@linkplain Config#blockShadingEnabled block shading is not enabled}.
+	 * {@linkplain Options#blockShadingEnabled block shading is not enabled}.
 	 *
 	 * @param callback the callback
 	 */
@@ -39,7 +39,7 @@ public class BedrockBlockShadingMixin {
 	        at = @At("HEAD"),
 	        cancellable = true)
 	private final void changeReturnedShade(final CallbackInfoReturnable<Float> callback) {
-		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().blockShadingEnabled;
+		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().blockShadingEnabled;
 
 		if (!blockShadingEnabled)
 			callback.setReturnValue(1.0F);

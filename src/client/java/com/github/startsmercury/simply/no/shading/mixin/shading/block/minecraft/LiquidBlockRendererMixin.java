@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -38,12 +38,12 @@ public class LiquidBlockRendererMixin {
 	 * {@link LiquidBlockRenderer#tesselate(BlockAndTintGetter, BlockPos, VertexConsumer, BlockState, FluidState)}.
 	 * <p>
 	 * Returns {@code true} if {@code shade} is {@code true} and
-	 * {@link Config#blockShadingEnabled block shading is enabled}; {@code false}
+	 * {@link Options#blockShadingEnabled block shading is enabled}; {@code false}
 	 * otherwise.
 	 *
 	 * @param shade the shade
 	 * @return {@code true} if {@code shade} is {@code true} and
-	 *         {@link Config#blockShadingEnabled block shading is enabled};
+	 *         {@link Options#blockShadingEnabled block shading is enabled};
 	 *         {@code false} otherwise
 	 */
 	@ModifyArg(method = "tesselate(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/material/FluidState;)V",
@@ -51,7 +51,7 @@ public class LiquidBlockRendererMixin {
 	                    target = "Lnet/minecraft/world/level/BlockAndTintGetter;getShade(Lnet/minecraft/core/Direction;Z)F"),
 	           index = 1)
 	private final boolean changeShade(final boolean shade) {
-		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().blockShadingEnabled;
+		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().blockShadingEnabled;
 
 		return shade && blockShadingEnabled;
 	}

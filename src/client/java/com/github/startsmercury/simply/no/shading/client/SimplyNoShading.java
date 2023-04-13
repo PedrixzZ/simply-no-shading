@@ -17,10 +17,10 @@ import net.minecraft.client.Minecraft;
 
 /**
  * The {@code SimplyNoShading} class models the Simply No Shading mod. It
- * contains the config, allows changing the config, and loading and saving of
- * the config. The model does not directly interact with the game, aside from
- * {@link #setConfig(Config)} which reloads the level when a change is detected.
- * Coupling this class with the base game is the responsibility of
+ * contains the options, allows changing the options, and loading and saving of
+ * the options. The model does not directly interact with the game, aside from
+ * {@link #setOptions(Options)} which reloads the level when a change is
+ * detected. Coupling this class with the base game is the responsibility of
  * {@link SimplyNoShadingClientEntrypoint} (and the mixins).
  *
  * @since 6.0.0
@@ -52,11 +52,11 @@ public class SimplyNoShading {
 	}
 
 	/**
-	 * Tries to get the config directory by using the {@linkplain FabricLoader
+	 * Tries to get the options directory by using the {@linkplain FabricLoader
 	 * fabric loader}. When called before the fabric loader is initialized, it'll
 	 * instead return the current working directory.
 	 *
-	 * @return the config directory
+	 * @return the options directory
 	 */
 	private static Path getConfigDirectory() {
 		try {
@@ -70,16 +70,16 @@ public class SimplyNoShading {
 	}
 
 	/**
-	 * Returns the default config path.
+	 * Returns the default options path.
 	 *
-	 * @return the default config path
+	 * @return the default options path
 	 * @see #getConfigDirectory()
 	 */
-	private static Path getDefaultConfigPath() {
+	private static Path getDefaultOptionsPath() {
 		final var configDirectory = SimplyNoShading.getConfigDirectory();
-		final var configPath = configDirectory.resolve("simply-no-shading.json");
+		final var optionsPath = configDirectory.resolve("simply-no-shading.json");
 
-		return configPath;
+		return optionsPath;
 	}
 
 	/**
@@ -92,37 +92,39 @@ public class SimplyNoShading {
 	}
 
 	/**
-	 * The config is responsible in storing the states that may modify the behavior
+	 * The options is responsible in storing the states that may modify the behavior
 	 * of the mod.
 	 */
-	private Config config;
+	private Options options;
 
 	/**
-	 * The config storage dictates where the {@link #config} should be stored, most
-	 * likely in a persistent file.
+	 * The options storage dictates where the {@link #options} should be stored,
+	 * most likely in a persistent file.
 	 */
-	private Storage<Config> configStorage;
+	private Storage<Options> optionsStorage;
 
 	/**
 	 * Creates a new {@code SimplyNoShading} instance.
 	 */
 	public SimplyNoShading() {
-		this.config = Config.INTERNAL_SHADERS;
-		this.configStorage = new JsonPathStorage<>(getDefaultConfigPath(),
+		this.options = Options.INTERNAL_SHADERS;
+		this.optionsStorage = new JsonPathStorage<>(getDefaultOptionsPath(),
 		        new GsonBuilder().setPrettyPrinting().create(),
-		        Config.class);
+		        Options.class);
 
 		computeFirstInstanceIfAbsent(this);
 	}
 
 	/**
-	 * Returns the config. It is responsible in storing the states that may modify
+	 * Returns the options. It is responsible in storing the states that may modify
 	 * the behavior of the mod
 	 *
-	 * @return the config
+	 * @return the options
+	 * @deprecated Use {@link #getOptions()} instead
 	 */
-	public Config getConfig() {
-		return this.config;
+	@Deprecated(forRemoval = true)
+	public Options getConfig() {
+		return getOptions();
 	}
 
 	/**
@@ -131,21 +133,51 @@ public class SimplyNoShading {
 	 *
 	 * @return the config storage
 	 */
-	public Storage<Config> getConfigStorage() {
-		return this.configStorage;
+	@Deprecated(forRemoval = true)
+	public Storage<Options> getConfigStorage() {
+		return getOptionsStorage();
+	}
+
+	/**
+	 * Returns the options. It is responsible in storing the states that may modify
+	 * the behavior of the mod
+	 *
+	 * @return the options
+	 */
+	public Options getOptions() {
+		return this.options;
+	}
+
+	/**
+	 * Returns the options storage. It dictates where the {@link #getOptions()
+	 * options} should be stored, most likely in a persistent file.
+	 *
+	 * @return the options storage
+	 */
+	public Storage<Options> getOptionsStorage() {
+		return this.optionsStorage;
 	}
 
 	/**
 	 * Loads the config from the {@link #getConfigStorage() config storage} logging
 	 * any errors caught.
 	 */
+	@Deprecated(forRemoval = true)
 	public void loadConfig() {
+		loadOptions();
+	}
+
+	/**
+	 * Loads the options from the {@link #getOptionsStorage() options storage}
+	 * logging any errors caught.
+	 */
+	public void loadOptions() {
 		try {
-			setConfig(getConfigStorage().load());
+			setOptions(getOptionsStorage().load());
 		} catch (final NoSuchFileException nsfe) {
-			saveConfig();
+			saveOptions();
 		} catch (final Exception e) {
-			LOGGER.warn("Unable to load config", e);
+			LOGGER.warn("Unable to load options", e);
 		}
 	}
 
@@ -153,32 +185,34 @@ public class SimplyNoShading {
 	 * Saves the config to the {@link #getConfigStorage() config storage} logging
 	 * any errors caught.
 	 */
+	@Deprecated(forRemoval = true)
 	public void saveConfig() {
+		saveOptions();
+	}
+
+	/**
+	 * Saves the options to the {@link #getOptionsStorage() options storage} logging
+	 * any errors caught.
+	 */
+	public void saveOptions() {
 		try {
-			getConfigStorage().save(getConfig());
+			getOptionsStorage().save(getOptions());
 		} catch (final Exception e) {
-			LOGGER.warn("Unable to save config", e);
+			LOGGER.warn("Unable to save options", e);
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Sets a new config. It is responsible in storing the states that may modify
+	 * Sets a new options. It is responsible in storing the states that may modify
 	 * the behavior of the mod
 	 *
-	 * @param config the new config
+	 * @param options the new options
+	 * @deprecated Use {@link #setOptions(Options)} instead
 	 */
-	public void setConfig(final Config config) {
-		Objects.requireNonNull(config, "Parameter config was null");
-
-		if (this.config.equals(config))
-			return;
-
-		this.config = config;
-
-		final var minecraft = Minecraft.getInstance();
-		if (minecraft.levelRenderer != null)
-			minecraft.levelRenderer.allChanged();
+	@Deprecated(forRemoval = true)
+	public void setConfig(final Options options) {
+		setOptions(options);
 	}
 
 	/**
@@ -187,9 +221,39 @@ public class SimplyNoShading {
 	 *
 	 * @param configStorage the new config storage
 	 */
-	public void setConfigStorage(final Storage<Config> configStorage) {
-		Objects.requireNonNull(configStorage, "Parameter configStorage was null");
+	@Deprecated(forRemoval = true)
+	public void setConfigStorage(final Storage<Options> configStorage) {
+		setOptionsStorage(configStorage);
+	}
 
-		this.configStorage = configStorage;
+	/**
+	 * Sets a new options. It is responsible in storing the states that may modify
+	 * the behavior of the mod
+	 *
+	 * @param options the new options
+	 */
+	public void setOptions(final Options options) {
+		Objects.requireNonNull(options, "Parameter options was null");
+
+		if (this.options.equals(options))
+			return;
+
+		this.options = options;
+
+		final var minecraft = Minecraft.getInstance();
+		if (minecraft.levelRenderer != null)
+			minecraft.levelRenderer.allChanged();
+	}
+
+	/**
+	 * Sets a new options storage. It dictates where the {@link #getOptions()
+	 * options} should be stored, most likely in a persistent file.
+	 *
+	 * @param optionsStorage the new options storage
+	 */
+	public void setOptionsStorage(final Storage<Options> optionsStorage) {
+		Objects.requireNonNull(optionsStorage, "Parameter optionsStorage was null");
+
+		this.optionsStorage = optionsStorage;
 	}
 }

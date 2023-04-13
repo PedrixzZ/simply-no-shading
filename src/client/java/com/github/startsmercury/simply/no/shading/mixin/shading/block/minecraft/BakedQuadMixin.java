@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 
 import net.fabricmc.api.EnvType;
@@ -33,7 +33,7 @@ public abstract class BakedQuadMixin {
 	 * return of {@link BakedQuad#isShade()}.
 	 * <p>
 	 * Overwrites the return value the boolean value of {@code true} if the original
-	 * return value was {@code true} and {@linkplain Config#blockShadingEnabled
+	 * return value was {@code true} and {@linkplain Options#blockShadingEnabled
 	 * block shading is enabled}; {@code false} otherwise.
 	 *
 	 * @param callback the callback
@@ -42,7 +42,7 @@ public abstract class BakedQuadMixin {
 	        at = @At("RETURN"),
 	        cancellable = true)
 	private final void changeReturnedShade(final CallbackInfoReturnable<Boolean> callback) {
-		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().blockShadingEnabled;
+		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().blockShadingEnabled;
 		final var originalReturnValue = callback.getReturnValueZ();
 
 		callback.setReturnValue(originalReturnValue && blockShadingEnabled);

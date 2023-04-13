@@ -7,7 +7,7 @@ import static dev.lambdaurora.spruceui.util.ColorUtil.packARGBColor;
 import static dev.lambdaurora.spruceui.util.RenderUtil.renderBackgroundTexture;
 import static net.minecraft.network.chat.CommonComponents.GUI_DONE;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,22 +25,22 @@ import net.minecraft.client.renderer.PanoramaRenderer;
 import net.minecraft.network.chat.Component;
 
 /**
- * The {@code ConfigScreen} class is an implementation of {@link SpruceScreen}
- * that functions as the config screen or Simpl No Shading.
+ * The {@code OptionsScreen} class is an implementation of {@link SpruceScreen}
+ * that functions as the options screen for Simply No Shading.
  * <p>
  * Like any other screens for minecraft, it can be displayed by using
  * {@link Minecraft#setScreen(Screen)}.
  *
- * @since 6.0.0
+ * @since 6.1.0
  */
-public class ConfigScreen extends SpruceScreen {
+public class OptionsScreen extends SpruceScreen {
 	/**
 	 * The height of the button panel of this screen.
 	 */
 	private static final int BUTTON_PANEL_HEIGHT = 35;
 
 	/**
-	 * The default title for Simply No Shading's config screen.
+	 * The default title for Simply No Shading's options screen.
 	 */
 	public static final Component DEFAULT_TITLE = Component.translatable("options.simply-no-shading");
 
@@ -60,9 +60,9 @@ public class ConfigScreen extends SpruceScreen {
 	private static final int TITLE_PANEL_HEIGHT = 34;
 
 	/**
-	 * The config builder to build immutable config objects.
+	 * The options builder to build immutable options objects.
 	 */
-	protected Config.Builder configBuilder;
+	protected Options.Builder optionsBuilder;
 
 	/**
 	 * The options widget that contains the options for the user to interact.
@@ -81,37 +81,37 @@ public class ConfigScreen extends SpruceScreen {
 
 	/**
 	 * Creates a new screen with a set parent, {@linkplain #DEFAULT_TITLE default
-	 * title}, and default config builder.
+	 * title}, and default options builder.
 	 *
 	 * @param parent the parent screen
 	 */
-	public ConfigScreen(final Screen parent) {
+	public OptionsScreen(final Screen parent) {
 		this(parent, DEFAULT_TITLE);
 	}
 
 	/**
-	 * Creates a new screen with a set parent, title, and default config builder.
+	 * Creates a new screen with a set parent, title, and default options builder.
 	 *
 	 * @param parent the parent screen
 	 * @param title  the screen title
 	 */
-	protected ConfigScreen(final Screen parent, final Component title) {
-		this(parent, title, Config.builder(SimplyNoShading.getFirstInstance().getConfig()));
+	protected OptionsScreen(final Screen parent, final Component title) {
+		this(parent, title, Options.builder(SimplyNoShading.getFirstInstance().getOptions()));
 	}
 
 	/**
-	 * Creates a new screen with a set parent, title, and config builder.
+	 * Creates a new screen with a set parent, title, and options builder.
 	 *
-	 * @param parent        the parent screen
-	 * @param title         the screen title
-	 * @param configBuilder the congfig builder
+	 * @param parent         the parent screen
+	 * @param title          the screen title
+	 * @param optionsBuilder the options builder
 	 */
-	protected ConfigScreen(final Screen parent, final Component title, final Config.Builder configBuilder) {
+	protected OptionsScreen(final Screen parent, final Component title, final Options.Builder optionsBuilder) {
 		super(title);
 
 		this.panoramaRenderer = new PanoramaRenderer(TitleScreen.CUBE_MAP);
 		this.parent = parent;
-		this.configBuilder = configBuilder;
+		this.optionsBuilder = optionsBuilder;
 	}
 
 	/**
@@ -129,12 +129,12 @@ public class ConfigScreen extends SpruceScreen {
 		        this.width,
 		        this.height - TITLE_PANEL_HEIGHT - BUTTON_PANEL_HEIGHT);
 		blockShadingEnabledOption = new SpruceBooleanOption("options.simply-no-shading.blockShadingEnabled",
-		        this.configBuilder::isBlockShadingEnabled,
-		        this.configBuilder::setBlockShadingEnabled,
+		        this.optionsBuilder::isBlockShadingEnabled,
+		        this.optionsBuilder::setBlockShadingEnabled,
 		        Component.translatable("options.simply-no-shading.blockShadingEnabled.tooltip"));
 		cloudShadingEnabledOption = new SpruceBooleanOption("options.simply-no-shading.cloudShadingEnabled",
-		        this.configBuilder::isCloudShadingEnabled,
-		        this.configBuilder::setCloudShadingEnabled,
+		        this.optionsBuilder::isCloudShadingEnabled,
+		        this.optionsBuilder::setCloudShadingEnabled,
 		        Component.translatable("options.simply-no-shading.cloudShadingEnabled.tooltip"));
 		{
 			final var buttonWidth = 200;
@@ -167,10 +167,10 @@ public class ConfigScreen extends SpruceScreen {
 	 */
 	@Override
 	public void removed() {
-		if (this.configBuilder != null)
-			SimplyNoShading.getFirstInstance().setConfig(this.configBuilder.build());
+		if (this.optionsBuilder != null)
+			SimplyNoShading.getFirstInstance().setOptions(this.optionsBuilder.build());
 		else
-			LOGGER.warn(this + " tried to save changes from a null config builder");
+			LOGGER.warn(this + " tried to save changes from a null options builder");
 	}
 
 	/**

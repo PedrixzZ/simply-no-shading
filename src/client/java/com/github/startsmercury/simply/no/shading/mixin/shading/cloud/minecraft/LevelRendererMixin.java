@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 
 import net.minecraft.client.renderer.LevelRenderer;
@@ -31,12 +31,12 @@ public class LevelRendererMixin {
 	 * {@code LevelRenderer.buildClouds(BufferBuilder, double, double, double, Vec3)}.
 	 * <p>
 	 * Returns the original float constant value when
-	 * {@linkplain Config#blockShadingEnabled block shading is enabled};
+	 * {@linkplain Options#blockShadingEnabled block shading is enabled};
 	 * {@code 1.0f} otherwise.
 	 *
 	 * @param constantValue the constant value
 	 * @return the original float constant value when
-	 *         {@linkplain Config#blockShadingEnabled block shading is enabled};
+	 *         {@linkplain Options#blockShadingEnabled block shading is enabled};
 	 *         {@code 1.0f} otherwise
 	 */
 	@ModifyConstant(method = "buildClouds(Lcom/mojang/blaze3d/vertex/BufferBuilder;DDDLnet/minecraft/world/phys/Vec3;)Lcom/mojang/blaze3d/vertex/BufferBuilder$RenderedBuffer;",
@@ -59,7 +59,7 @@ public class LevelRendererMixin {
 	                        @Constant(floatValue = 0.8f,
 	                                  ordinal = 2) })
 	private final float changeCloudBrightness(final float constantValue) {
-		final var cloudShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().cloudShadingEnabled;
+		final var cloudShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().cloudShadingEnabled;
 
 		if (cloudShadingEnabled)
 			return constantValue;

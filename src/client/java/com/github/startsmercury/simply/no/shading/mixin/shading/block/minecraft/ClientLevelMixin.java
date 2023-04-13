@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import com.github.startsmercury.simply.no.shading.client.Config;
+import com.github.startsmercury.simply.no.shading.client.Options;
 import com.github.startsmercury.simply.no.shading.client.SimplyNoShading;
 
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -30,19 +30,19 @@ public abstract class ClientLevelMixin {
 	 * parameter {@code shade} in {@link ClientLevel#getShade(Direction, boolean)}
 	 * <p>
 	 * Returns {@code true} if {@code shade} is {@code true} and
-	 * {@link Config#blockShadingEnabled block shading is enabled}; {@code false}
+	 * {@link Options#blockShadingEnabled block shading is enabled}; {@code false}
 	 * otherwise.
 	 *
 	 * @param shade the shade
 	 * @return {@code true} if {@code shade} is {@code true} and
-	 *         {@link Config#blockShadingEnabled block shading is enabled};
+	 *         {@link Options#blockShadingEnabled block shading is enabled};
 	 *         {@code false} otherwise
 	 */
 	@ModifyVariable(method = "getShade(Lnet/minecraft/core/Direction;Z)F",
 	                at = @At("HEAD"),
 	                argsOnly = true)
 	private final boolean changeShade(final boolean shade) {
-		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getConfig().blockShadingEnabled;
+		final var blockShadingEnabled = SimplyNoShading.getFirstInstance().getOptions().blockShadingEnabled;
 
 		return shade && blockShadingEnabled;
 	}
